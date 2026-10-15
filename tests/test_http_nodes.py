@@ -72,10 +72,16 @@ class ProvisioningTests(unittest.TestCase):
         self.assertIn("team_secrets[inventory_hostname].password", playbook)
         self.assertIn('--host 0.0.0.0 --port 80', unit)
         self.assertIn('AmbientCapabilities=CAP_NET_BIND_SERVICE', unit)
-        # Shared per-team Kali login (teamNN / teamNN) with sudo for patching.
+        # Two accounts per box: console teamNN (blocked from SSH) and SSH mekoNN.
         self.assertIn("name: '{{ inventory_hostname }}'", playbook)
-        self.assertIn("inventory_hostname | password_hash('sha512')", playbook)
+        self.assertIn("team_secrets[inventory_hostname].console_password | password_hash('sha512')", playbook)
+        self.assertIn("name: '{{ team_secrets[inventory_hostname].ssh_user }}'", playbook)
+        self.assertIn("team_secrets[inventory_hostname].ssh_password | password_hash('sha512')", playbook)
         self.assertIn('groups: sudo', playbook)
+        # Console account is denied over SSH; SSH account must type its password.
+        self.assertIn('DenyUsers {{ inventory_hostname }}', playbook)
+        self.assertIn('Match User {{ team_secrets[inventory_hostname].ssh_user }}', playbook)
+        self.assertIn('AuthenticationMethods password', playbook)
         # The obsolete central-server pieces must be gone.
         for gone in ['server-acl.nft', 'attacker-http', 'servicedesk.service', 'ip_forward']:
             self.assertNotIn(gone, playbook)

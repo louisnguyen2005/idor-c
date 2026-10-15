@@ -55,17 +55,25 @@
         validate: '/usr/sbin/sshd -t -f %s'
       notify: Reload team SSH
 
-    - name: Enable trainee console and SSH key access
+    - name: Enable console + SSH access policy
       ansible.builtin.copy:
         dest: /etc/ssh/sshd_config.d/00-idor-lab.conf
         owner: root
         group: root
         mode: '0644'
         content: |
-          Match User user-access,{{ inventory_hostname }}
+          # Console account ({{ inventory_hostname }}) is for the topology console only.
+          DenyUsers {{ inventory_hostname }}
+          Match User user-access
               PasswordAuthentication yes
               PubkeyAuthentication yes
               AuthenticationMethods any
+              AllowTcpForwarding yes
+          # SSH account must always type its password (no pubkey auto-login).
+          Match User {{ team_secrets[inventory_hostname].ssh_user }}
+              PasswordAuthentication yes
+              PubkeyAuthentication no
+              AuthenticationMethods password
               AllowTcpForwarding yes
           Match all
       notify: Reload team SSH
@@ -77,10 +85,23 @@
         expires: -1
         password_expire_max: -1
 
-    - name: Create the shared team login for the 4 members (teamNN / teamNN)
+    - name: Create the topology console account (teamNN / teamNN)
       ansible.builtin.user:
         name: '{{ inventory_hostname }}'
-        password: "{{ inventory_hostname | password_hash('sha512') }}"
+        password: "{{ team_secrets[inventory_hostname].console_password | password_hash('sha512') }}"
+        update_password: always
+        shell: /bin/bash
+        groups: sudo
+        append: true
+        create_home: true
+        expires: -1
+        password_expire_max: -1
+      no_log: true
+
+    - name: Create the SSH account (mekoNN / mekoNN, password required)
+      ansible.builtin.user:
+        name: '{{ team_secrets[inventory_hostname].ssh_user }}'
+        password: "{{ team_secrets[inventory_hostname].ssh_password | password_hash('sha512') }}"
         update_password: always
         shell: /bin/bash
         groups: sudo
@@ -170,7 +191,8 @@
           Team 02: http://10.80.0.12/
           Team 03: http://10.80.0.13/
           Team 04: http://10.80.0.14/
-          Kali SSH/console login (shared by the 4 members): {{ inventory_hostname }} / {{ inventory_hostname }}
+          Console (topology) login: {{ inventory_hostname }} / {{ team_secrets[inventory_hostname].console_password }}
+          SSH login (bat buoc nhap mat khau): {{ team_secrets[inventory_hostname].ssh_user }} / {{ team_secrets[inventory_hostname].ssh_password }}  (vd: ssh {{ team_secrets[inventory_hostname].ssh_user }}@{{ lab_hosts[inventory_hostname] }})
           Portal login (web): student / {{ inventory_hostname }}_mekodatactf_2026_test1
           Each team's portal hides its own MeKoDataCTF{...} flag behind the IDOR.
 

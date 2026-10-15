@@ -13,8 +13,15 @@ One CyberRangeCZ Sandbox Definition. Create **one pool of size 1** from this rep
 
 **Credentials.**
 
-- **Kali login (SSH/console), shared by the 4 team members:** `teamNN / teamNN` — e.g. `team01 / team01`. This account has `sudo` so the team can patch and redeploy. The platform `user-access` account also stays for the GUI tunnel.
-- **Web portal login:** `student / teamNN_mekodatactf_2026_test1` — e.g. `team01_mekodatactf_2026_test1`.
+Each team VM has **two separate local accounts** (both with `sudo` for patching), plus the web portal login:
+
+- **Topology console login:** `teamNN / teamNN` (e.g. `team01 / team01`). Used at the topology console. This account is **blocked from SSH** (`DenyUsers`).
+- **SSH login:** `mekoNN / mekoNN` (e.g. `meko01 / meko01`), e.g. `ssh meko01@10.80.0.11`. SSH is **password-only** (pubkey disabled) so it always prompts; the console `teamNN` account cannot be used over SSH.
+- **Web portal login:** `student / teamNN_mekodatactf_2026_test1`.
+
+All of these live in `team_secrets` in `provisioning/group_vars/all.yml` (`console_password`, `ssh_user`, `ssh_password`, `password`). The platform `user-access` account stays for the GUI tunnel. These are demo values — replace before any real event.
+
+> Note: if your CyberRangeCZ console itself logs in over SSH as `teamNN`, remove the `DenyUsers {{ inventory_hostname }}` line, since it would block that console too.
 
 Passwords and flags live in `provisioning/group_vars/all.yml` (`team_secrets`, `team_flags`) — replace them before any real event.
 

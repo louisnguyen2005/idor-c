@@ -1,9 +1,14 @@
 # Lab-only credentials and per-team secrets.
 # Replace before use outside an isolated training cloud.
 #
-# Each team VM uses ONE password (team_secrets[host].password) for BOTH the
-# point-lookup web portal login AND the Kali `user-access` console login, and
-# hides its own flag (team_secrets[host].flag) behind the IDOR.
+# Per team (team_secrets[host]):
+#   password         -> web portal login (student / <password>)
+#   console_password -> topology console login for user teamNN (teamNN / <console_password>)
+#   ssh_user         -> the ONLY account allowed over SSH on that box (mekoNN)
+#   ssh_password     -> password for ssh_user; SSH always prompts for it
+#   flag             -> hidden behind the IDOR.
+# The console account (teamNN) is blocked from SSH, so SSH requires the mekoNN
+# credential, separate from the console credential.
 lab_enforce_owner: false
 
 lab_hosts:
@@ -30,21 +35,33 @@ team_flags:
 team_secrets:
   team01:
     password: team01_mekodatactf_2026_test1
+    console_password: team01
+    ssh_user: meko01
+    ssh_password: meko01
     flag: MeKoDataCTF{team01_9f3a7c21}
     student_id: 20260101
     student_name: Nguyen Van An
   team02:
     password: team02_mekodatactf_2026_test1
+    console_password: team02
+    ssh_user: meko02
+    ssh_password: meko02
     flag: MeKoDataCTF{team02_4d8e2b6f}
     student_id: 20260201
     student_name: Tran Gia Bao
   team03:
     password: team03_mekodatactf_2026_test1
+    console_password: team03
+    ssh_user: meko03
+    ssh_password: meko03
     flag: MeKoDataCTF{team03_c1a05e94}
     student_id: 20260301
     student_name: Le Minh Chau
   team04:
     password: team04_mekodatactf_2026_test1
+    console_password: team04
+    ssh_user: meko04
+    ssh_password: meko04
     flag: MeKoDataCTF{team04_6b7fd310}
     student_id: 20260401
     student_name: Pham Quoc Dat
