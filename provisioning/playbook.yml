@@ -25,12 +25,12 @@
   vars:
     team_password: '{{ team_secrets[inventory_hostname].password }}'
     user_access_username: user-access
-    user_access_password: '{{ team_password }}'
+    user_access_password: '{{ team_secrets[inventory_hostname].console_password }}'
     user_access_shell: /bin/bash
     user_access_sudo: false
     user_access_ssh_public_key: '{{ global_ssh_public_user_key }}'
   pre_tasks:
-    - name: Require the platform-provided trainee public key and this team's secret
+    - name: Require the platform-provided trainee key path and this team's secret
       ansible.builtin.assert:
         that:
           - global_ssh_public_user_key is defined
@@ -55,28 +55,34 @@
         validate: '/usr/sbin/sshd -t -f %s'
       notify: Reload team SSH
 
-    - name: Enable console + SSH access policy
+    - name: Require passwords for team and platform user SSH access
       ansible.builtin.copy:
         dest: /etc/ssh/sshd_config.d/00-idor-lab.conf
         owner: root
         group: root
         mode: '0644'
         content: |
-          # Console account ({{ inventory_hostname }}) is for the topology console only.
-          DenyUsers {{ inventory_hostname }}
+          # Block the image default and obsolete lab SSH accounts.
+          DenyUsers kali meko*
           Match User user-access
               PasswordAuthentication yes
-              PubkeyAuthentication yes
-              AuthenticationMethods any
+              PubkeyAuthentication no
+              AuthenticationMethods password
               AllowTcpForwarding yes
-          # SSH account must always type its password (no pubkey auto-login).
-          Match User {{ team_secrets[inventory_hostname].ssh_user }}
+          # The team account must always type its own password.
+          Match User {{ inventory_hostname }}
               PasswordAuthentication yes
               PubkeyAuthentication no
               AuthenticationMethods password
               AllowTcpForwarding yes
           Match all
+        validate: '/usr/sbin/sshd -t -f %s'
       notify: Reload team SSH
+
+    - name: Remove the platform key from the trainee account
+      ansible.builtin.file:
+        path: /home/user-access/.ssh/authorized_keys
+        state: absent
 
     - name: Keep the trainee account and shell usable
       ansible.builtin.user:
@@ -85,23 +91,15 @@
         expires: -1
         password_expire_max: -1
 
-    - name: Create the topology console account (teamNN / teamNN)
+    - name: Disable password login for the default Kali account
+      ansible.builtin.user:
+        name: kali
+        password_lock: true
+
+    - name: Create the team console and SSH account (teamNN / teamNN)
       ansible.builtin.user:
         name: '{{ inventory_hostname }}'
         password: "{{ team_secrets[inventory_hostname].console_password | password_hash('sha512') }}"
-        update_password: always
-        shell: /bin/bash
-        groups: sudo
-        append: true
-        create_home: true
-        expires: -1
-        password_expire_max: -1
-      no_log: true
-
-    - name: Create the SSH account (mekoNN / mekoNN, password required)
-      ansible.builtin.user:
-        name: '{{ team_secrets[inventory_hostname].ssh_user }}'
-        password: "{{ team_secrets[inventory_hostname].ssh_password | password_hash('sha512') }}"
         update_password: always
         shell: /bin/bash
         groups: sudo
@@ -116,6 +114,29 @@
         name: ssh
         enabled: true
         state: started
+
+    - ansible.builtin.meta: flush_handlers
+
+    - name: Check effective SSH authentication for trainee accounts
+      ansible.builtin.command:
+        argv:
+          - /usr/sbin/sshd
+          - -T
+          - -C
+          - 'user={{ item }},host=localhost,addr=127.0.0.1'
+      loop:
+        - user-access
+        - '{{ inventory_hostname }}'
+      register: trainee_sshd_policy
+      changed_when: false
+
+    - name: Require password-only SSH for trainee accounts
+      ansible.builtin.assert:
+        that:
+          - "'passwordauthentication yes' in item.stdout"
+          - "'pubkeyauthentication no' in item.stdout"
+          - "'authenticationmethods password' in item.stdout"
+      loop: '{{ trainee_sshd_policy.results }}'
 
     - name: Create the portal system user
       ansible.builtin.user:
@@ -191,8 +212,8 @@
           Team 02: http://10.80.0.12/
           Team 03: http://10.80.0.13/
           Team 04: http://10.80.0.14/
-          Console (topology) login: {{ inventory_hostname }} / {{ team_secrets[inventory_hostname].console_password }}
-          SSH login (bat buoc nhap mat khau): {{ team_secrets[inventory_hostname].ssh_user }} / {{ team_secrets[inventory_hostname].ssh_password }}  (vd: ssh {{ team_secrets[inventory_hostname].ssh_user }}@{{ lab_hosts[inventory_hostname] }})
+          Console and SSH login: {{ inventory_hostname }} / {{ team_secrets[inventory_hostname].console_password }}  (vd: ssh {{ inventory_hostname }}@{{ lab_hosts[inventory_hostname] }})
+          Platform SSH alias: user-access / {{ team_secrets[inventory_hostname].console_password }}  (vd: ssh -F <user-config> {{ inventory_hostname }})
           Portal login (web): student / {{ inventory_hostname }}_mekodatactf_2026_test1
           Each team's portal hides its own MeKoDataCTF{...} flag behind the IDOR.
 

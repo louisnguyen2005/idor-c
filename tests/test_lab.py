@@ -181,11 +181,10 @@ class TopologyTests(unittest.TestCase):
         data = yaml.safe_load((ROOT / 'provisioning/group_vars/all.yml').read_text(encoding='utf-8'))
         self.assertEqual(set(data['team_secrets']), {'team01', 'team02', 'team03', 'team04'})
         for team, secret in data['team_secrets'].items():
-            nn = team[len('team'):]  # '01'..'04'
             self.assertEqual(secret['password'], f'{team}_mekodatactf_2026_test1')  # web
-            self.assertEqual(secret['console_password'], team)                       # team01
-            self.assertEqual(secret['ssh_user'], f'meko{nn}')                         # meko01
-            self.assertEqual(secret['ssh_password'], f'meko{nn}')                     # meko01
+            self.assertEqual(secret['console_password'], team)  # console and SSH
+            self.assertNotIn('ssh_user', secret)
+            self.assertNotIn('ssh_password', secret)
             self.assertTrue(secret['flag'].startswith('MeKoDataCTF{' + team + '_'))
             self.assertTrue(secret['flag'].endswith('}'))
         # team_flags (consumed by the checker) must match team_secrets.

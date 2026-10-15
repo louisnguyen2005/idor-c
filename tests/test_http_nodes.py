@@ -72,16 +72,18 @@ class ProvisioningTests(unittest.TestCase):
         self.assertIn("team_secrets[inventory_hostname].password", playbook)
         self.assertIn('--host 0.0.0.0 --port 80', unit)
         self.assertIn('AmbientCapabilities=CAP_NET_BIND_SERVICE', unit)
-        # Two accounts per box: console teamNN (blocked from SSH) and SSH mekoNN.
+        # The team account works at the console and over password-only SSH.
         self.assertIn("name: '{{ inventory_hostname }}'", playbook)
         self.assertIn("team_secrets[inventory_hostname].console_password | password_hash('sha512')", playbook)
-        self.assertIn("name: '{{ team_secrets[inventory_hostname].ssh_user }}'", playbook)
-        self.assertIn("team_secrets[inventory_hostname].ssh_password | password_hash('sha512')", playbook)
+        self.assertIn('name: kali\n        password_lock: true', playbook)
         self.assertIn('groups: sudo', playbook)
-        # Console account is denied over SSH; SSH account must type its password.
-        self.assertIn('DenyUsers {{ inventory_hostname }}', playbook)
-        self.assertIn('Match User {{ team_secrets[inventory_hostname].ssh_user }}', playbook)
+        self.assertIn('DenyUsers kali meko*', playbook)
+        self.assertIn('Match User {{ inventory_hostname }}', playbook)
+        self.assertIn('PubkeyAuthentication no', playbook)
         self.assertIn('AuthenticationMethods password', playbook)
+        self.assertIn("user_access_password: '{{ team_secrets[inventory_hostname].console_password }}'", playbook)
+        self.assertIn('path: /home/user-access/.ssh/authorized_keys', playbook)
+        self.assertNotIn('PubkeyAuthentication yes', playbook)
         # The obsolete central-server pieces must be gone.
         for gone in ['server-acl.nft', 'attacker-http', 'servicedesk.service', 'ip_forward']:
             self.assertNotIn(gone, playbook)

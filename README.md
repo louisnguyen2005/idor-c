@@ -13,15 +13,14 @@ One CyberRangeCZ Sandbox Definition. Create **one pool of size 1** from this rep
 
 **Credentials.**
 
-Each team VM has **two separate local accounts** (both with `sudo` for patching), plus the web portal login:
+Each team VM has a `teamNN` account with `sudo` for patching, plus the web portal login:
 
-- **Topology console login:** `teamNN / teamNN` (e.g. `team01 / team01`). Used at the topology console. This account is **blocked from SSH** (`DenyUsers`).
-- **SSH login:** `mekoNN / mekoNN` (e.g. `meko01 / meko01`), e.g. `ssh meko01@10.80.0.11`. SSH is **password-only** (pubkey disabled) so it always prompts; the console `teamNN` account cannot be used over SSH.
+- **Console and SSH login:** `teamNN / teamNN` (e.g. `team01 / team01`). SSH uses a password for this account, e.g. `ssh team01@10.80.0.11` or `ssh team02@10.80.0.12`; public-key authentication is disabled for `teamNN`.
 - **Web portal login:** `student / teamNN_mekodatactf_2026_test1`.
 
-All of these live in `team_secrets` in `provisioning/group_vars/all.yml` (`console_password`, `ssh_user`, `ssh_password`, `password`). The platform `user-access` account stays for the GUI tunnel. These are demo values — replace before any real event.
+These passwords live in `team_secrets` in `provisioning/group_vars/all.yml` (`console_password`, `password`). The default `kali` account is password-locked and blocked from SSH. The platform `user-access` account also requires the `teamNN` password; its public-key login is disabled. These are demo values — replace before any real event.
 
-> Note: if your CyberRangeCZ console itself logs in over SSH as `teamNN`, remove the `DenyUsers {{ inventory_hostname }}` line, since it would block that console too.
+The generated `ssh -F ... team01` command selects the platform's `user-access` account on team01 and now prompts for password `team01`: `ssh -F .\pool-...-user-config team01`. The same command with alias `team02` prompts for password `team02`. The jump hosts in that config still use the platform's keys, and the separate management SSH access remains available for provisioning.
 
 Passwords and flags live in `provisioning/group_vars/all.yml` (`team_secrets`, `team_flags`) — replace them before any real event.
 
