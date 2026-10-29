@@ -124,6 +124,16 @@ Scoreboard hiển thị round/tick/service còn bao lâu, SLA mỗi đội, tr�
 
 Trang monitor ban tổ chức: `http://<backend-host>:<port>/monitor`. Lấy `monitor_token` từ `gameserver/runtime-sla-<event>/monitor.json`, nhập trong trang. Trang này chỉ đọc phase, tick hiện tại, heartbeat checker, thời điểm kết quả gần nhất, lỗi scheduler và số bản ghi database; nó không chứa flag. Bắt đầu/kết thúc cuộc thi bằng stack hoặc `gameserver.control`; monitor token không thay thế admin token.
 
+### Chia sẻ scoreboard của event local đang chạy
+
+Backend và checker tiếp tục chạy ở `127.0.0.1:9000`. Trên máy điều phối, mở **PowerShell Administrator** thứ ba tại gốc source và chạy:
+
+```powershell
+.\Start-PublicScoreboard.ps1 -ListenIp "<IP-MAY-DIEU-PHOI>" -ClientCidr "<IP-MAY-BAN>/32"
+```
+
+Ví dụ địa chỉ truy cập là `http://<IP-MAY-DIEU-PHOI>:9000/#score`. Bạn thi phải có đường mạng tới IP máy điều phối. Script chỉ mở scoreboard, các API bảng điểm và API nộp flag; API quản trị, checker và monitor không đi qua địa chỉ chia sẻ. Mỗi đội vẫn cần token riêng để nộp flag. Firewall chỉ cho phép IP/CIDR đã truyền vào `-ClientCidr`. Giữ cửa sổ này mở; `Ctrl+C` dừng điểm truy cập và xóa rule firewall do script tạo. IP `10.x.x.x` là IP nội bộ; để truy cập từ Internet cần cấu hình mạng ngoài (định tuyến/NAT hoặc reverse proxy HTTPS) riêng.
+
 ## 9. SQLite, backup và khôi phục
 
 Database cuộc thi: `gameserver/runtime-sla-<event>/competition.sqlite`, SQLite WAL. Backend là tiến trình duy nhất mở database; worker báo kết quả qua API. `tick_checks` có khóa `(tick,team)`, `tick_flags` giữ flag/password riêng và mã đơn xác nhận, `tick_captures` giới hạn capture mỗi flag, `tick_submissions` chỉ lưu hash đầu vào cùng verdict. Monitor API không trả giá trị flag. Runtime ACL chỉ dành cho ban tổ chức.

@@ -1,67 +1,67 @@
-name: idor-single-sandbox-five-hosts
+name: mixed_db_checker_flag
 hosts:
-- name: attacker1
-  base_box:
-    image: kali
-    mgmt_user: debian
-  flavor: standard.kali
-- name: attacker2
-  base_box:
-    image: kali
-    mgmt_user: debian
-  flavor: standard.kali
-- name: attacker3
-  base_box:
-    image: kali
-    mgmt_user: debian
-  flavor: standard.kali
-- name: attacker4
-  base_box:
-    image: kali
-    mgmt_user: debian
-  flavor: standard.kali
-- name: server
-  base_box:
-    image: debian-12-x86_64
-    mgmt_user: debian
-  flavor: standard.small
+  - name: attacker1
+    base_box:
+      image: kali
+      mgmt_user: debian
+    flavor: standard.kali
+  - name: attacker2
+    base_box:
+      image: kali
+      mgmt_user: debian
+    flavor: standard.kali
+  - name: attacker3
+    base_box:
+      image: kali
+      mgmt_user: debian
+    flavor: standard.kali
+  - name: attacker4
+    base_box:
+      image: kali
+      mgmt_user: debian
+    flavor: standard.kali
+  - name: server
+    base_box:
+      image: debian-12-x86_64
+      mgmt_user: debian
+    flavor: standard.small
 routers:
-- name: gateway
-  base_box:
-    image: debian-12-x86_64
-    mgmt_user: debian
-  flavor: standard.small
+  - name: gateway
+    base_box:
+      image: debian-12-x86_64
+      mgmt_user: debian
+    flavor: standard.small
 wan:
   name: internet-connection
   cidr: 100.100.100.0/24
 networks:
-- name: lab-lan
-  cidr: 10.80.0.0/24
-  accessible_by_user: true
+  - name: lab-lan
+    cidr: 10.80.0.0/24
+    accessible_by_user: true
 net_mappings:
-- host: attacker1
-  network: lab-lan
-  ip: 10.80.0.11
-- host: attacker2
-  network: lab-lan
-  ip: 10.80.0.12
-- host: attacker3
-  network: lab-lan
-  ip: 10.80.0.13
-- host: attacker4
-  network: lab-lan
-  ip: 10.80.0.14
-- host: server
-  network: lab-lan
-  ip: 10.80.0.20
+  - host: attacker1
+    network: lab-lan
+    ip: 10.80.0.11
+  - host: attacker2
+    network: lab-lan
+    ip: 10.80.0.12
+  - host: attacker3
+    network: lab-lan
+    ip: 10.80.0.13
+  - host: attacker4
+    network: lab-lan
+    ip: 10.80.0.14
+  - host: server
+    network: lab-lan
+    ip: 10.80.0.20
 router_mappings:
-- router: gateway
-  network: lab-lan
-  ip: 10.80.0.1
+  - router: gateway
+    network: lab-lan
+    ip: 10.80.0.1
 groups:
-- name: attackers
-  nodes:
-  - attacker1
-  - attacker2
-  - attacker3
-  - attacker4
+  - name: attackers
+    nodes:
+      - attacker1
+      - attacker2
+      - attacker3
+      - attacker4

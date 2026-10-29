@@ -1,0 +1,14 @@
+﻿2026-10-29 13:38:55+07:00 [INFO] Gateway IP 127.0.0.1 is assigned to this Windows machine.
+2026-10-29 13:38:55+07:00 [INFO] OpenSSH Client: C:\WINDOWS\System32\OpenSSH\ssh.exe
+2026-10-29 13:38:55+07:00 [INFO] SSH alias 'man' resolves to user@192.168.65.24.
+2026-10-29 13:38:55+07:00 [INFO] Resolved ProxyJump: default-p0000000115-s0000000162@[10.32.8.175]
+2026-10-29 13:38:55+07:00 [INFO] SSH IdentityFile '~/.ssh/pool-id-115-sandbox-id-67d0b208-6333-44c2-aaeb-89e5bbb51e5e-user-key' exists=True (path only; key contents are never read or logged).
+2026-10-29 13:38:55+07:00 [WARN] No listener for Shared organizer ServiceDesk at 127.0.0.1:8080.
+2026-10-29 13:38:55+07:00 [WARN] No listener for shop01 team01 at 127.0.0.1:8011.
+2026-10-29 13:38:56+07:00 [WARN] No listener for shop01 team02 at 127.0.0.1:8012.
+2026-10-29 13:38:56+07:00 [WARN] No listener for shop01 team03 at 127.0.0.1:8013.
+2026-10-29 13:38:56+07:00 [WARN] No listener for shop01 team04 at 127.0.0.1:8014.
+2026-10-29 13:38:56+07:00 [WARN] No listener for shop02 team01 at 127.0.0.1:8021.
+2026-10-29 13:38:57+07:00 [WARN] No listener for shop02 team02 at 127.0.0.1:8022.
+2026-10-29 13:38:57+07:00 [WARN] No listener for shop02 team03 at 127.0.0.1:8023.
+2026-10-29 13:38:57+07:00 [WARN] No listener for shop02 team04 at 127.0.0.1:8024.

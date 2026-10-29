@@ -32,6 +32,12 @@ Download/extract its **user SSH access ZIP** into your Windows `.ssh` folder. Ke
 
 This derives pool/sandbox IDs, generates all forward/checker targets and password-login team aliases, and creates a **new SQLite database in READY state**. Local access binds gateway listeners to `127.0.0.1`; it works for a checker on the same Windows machine and needs no inbound LAN firewall rule.
 
+To share the scoreboard of an event already running in local mode, run
+`Start-PublicScoreboard.ps1 -ListenIp <ORGANIZER-LAN-IP> -ClientCidr <PLAYER-IP>/32`
+in an Administrator PowerShell window. It opens only the scoreboard, public
+score APIs and authenticated flag submission on the selected network IP;
+the backend and checker continue on loopback. See `docs/DEPLOYMENT.vi.md`.
+
 Then verify SSH fingerprints and forwarding using [the gateway guide](CyberRangeCZ-Windows-Gateway/README.md). Start the stack when ready to start the competition clock:
 
 ```powershell

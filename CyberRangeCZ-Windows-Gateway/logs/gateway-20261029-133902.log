@@ -1,0 +1,7 @@
+﻿2026-10-29 13:39:04+07:00 [INFO] Resolved alias 'man' => user@192.168.65.24; ProxyJump='default-p0000000115-s0000000162@[10.32.8.175]'.
+2026-10-29 13:39:04+07:00 [INFO] Starting SSH port forwards directly; this account may not provide an interactive shell.
+2026-10-29 13:39:04+07:00 [INFO] Launching OpenSSH tunnel for alias 'man' with 9 forward(s).
+2026-10-29 13:39:09+07:00 [INFO] Tunnel process 17596 is listening and all configured backends accepted TCP.
+2026-10-29 13:39:09+07:00 [INFO] Monitoring the tunnel. Press Ctrl+C or run Stop-CTFGateway.ps1 to stop.
+2026-10-29 13:39:38+07:00 [INFO] Stopping managed ssh.exe process 17596.
+2026-10-29 13:39:38+07:00 [INFO] Gateway stopped: watcher stopped.

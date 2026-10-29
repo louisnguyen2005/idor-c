@@ -1,0 +1,26 @@
+2026-10-28 13:43:25+07:00 [INFO] Resolved alias 'man' => user@192.168.65.24; ProxyJump='default-p0000000115-s0000000162@[10.32.8.175]'.
+2026-10-28 13:43:25+07:00 [INFO] Starting SSH port forwards directly; this account may not provide an interactive shell.
+2026-10-28 13:43:25+07:00 [INFO] Launching OpenSSH tunnel for alias 'man' with 9 forward(s).
+2026-10-28 13:43:28+07:00 [INFO] Tunnel process 23872 is listening and all configured backends accepted TCP.
+2026-10-28 13:43:28+07:00 [INFO] Monitoring the tunnel. Press Ctrl+C or run Stop-CTFGateway.ps1 to stop.
+2026-10-28 14:26:26+07:00 [WARN] SSH process exited with code 255.
+2026-10-28 14:26:26+07:00 [INFO] Reconnect attempt 1/5 in 5s.
+2026-10-28 14:26:31+07:00 [INFO] Launching OpenSSH tunnel for alias 'man' with 9 forward(s).
+2026-10-28 14:26:50+07:00 [INFO] Tunnel process 27772 is listening and all configured backends accepted TCP.
+2026-10-28 16:35:29+07:00 [WARN] SSH process exited with code 255.
+2026-10-28 16:35:30+07:00 [INFO] Reconnect attempt 2/5 in 5s.
+2026-10-28 16:35:35+07:00 [INFO] Launching OpenSSH tunnel for alias 'man' with 9 forward(s).
+2026-10-28 16:35:48+07:00 [ERROR] ssh.exe exited with code 255. See D:\TAILIEU\LVTN\LVTN-merged-auto-checker\LVTN-shop-attack-defense-20261028\CyberRangeCZ-Windows-Gateway\logs\ssh-20135476e4dc4173a62856743a4e6678.stderr.log. ssh: connect to host 10.32.8.175 port 22: Connection aborted
+2026-10-28 16:36:03+07:00 [WARN] SSH process exited with code 255.
+2026-10-28 16:36:03+07:00 [INFO] Reconnect attempt 3/5 in 5s.
+2026-10-28 16:36:08+07:00 [INFO] Launching OpenSSH tunnel for alias 'man' with 9 forward(s).
+2026-10-28 16:36:12+07:00 [INFO] Tunnel process 16208 is listening and all configured backends accepted TCP.
+2026-10-28 16:42:12+07:00 [WARN] SSH process exited with code 255.
+2026-10-28 16:42:12+07:00 [INFO] Reconnect attempt 4/5 in 5s.
+2026-10-28 16:42:17+07:00 [INFO] Launching OpenSSH tunnel for alias 'man' with 9 forward(s).
+2026-10-28 16:42:19+07:00 [ERROR] ssh.exe exited with code 255. See D:\TAILIEU\LVTN\LVTN-merged-auto-checker\LVTN-shop-attack-defense-20261028\CyberRangeCZ-Windows-Gateway\logs\ssh-b7b5e3ffb0ee4493bbb35a0b87d371e9.stderr.log. ssh: connect to host 10.32.8.175 port 22: Unknown error | Connection closed by UNKNOWN port 65535
+2026-10-28 16:42:34+07:00 [WARN] SSH process exited with code 255.
+2026-10-28 16:42:34+07:00 [INFO] Reconnect attempt 5/5 in 5s.
+2026-10-28 16:42:39+07:00 [INFO] Launching OpenSSH tunnel for alias 'man' with 9 forward(s).
+2026-10-28 16:42:41+07:00 [ERROR] ssh.exe exited with code 255. See D:\TAILIEU\LVTN\LVTN-merged-auto-checker\LVTN-shop-attack-defense-20261028\CyberRangeCZ-Windows-Gateway\logs\ssh-b43897f47a654ed6833fda4ad0b92add.stderr.log. ssh: connect to host 10.32.8.175 port 22: Unknown error | Connection closed by UNKNOWN port 65535
+2026-10-28 16:42:41+07:00 [INFO] Gateway stopped: restart limit reached.
