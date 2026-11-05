@@ -17,6 +17,14 @@
         update_cache: true
         cache_valid_time: 3600
 
+    - name: Đảm bảo thư mục log của Apache tồn tại
+      ansible.builtin.file:
+        path: /var/log/apache2
+        state: directory
+        owner: root
+        group: adm
+        mode: '0750'
+
     - name: Tạo tài khoản dịch vụ hạn chế
       ansible.builtin.user:
         name: meko-web
